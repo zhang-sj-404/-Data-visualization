@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.czu.zsj.mapper.HouseMapper">
+    <select id="getAllHouse" resultType="com.czu.zsj.pojo.House">
+        SELECT * FROM `${city_location_url}` WHERE h_district="玄武区"
+    </select>
+    <select id="getHouseByType" resultType="com.czu.zsj.pojo.House_ByType_Pie">
+        SELECT count(*) as h_type_total,h_type FROM `beijing` GROUP BY h_type
+    </select>
+    <select id="getHousePriceUnitAvg" resultType="com.czu.zsj.pojo.HousePriceUnitAvg">
+        select h_district,AVG(h_price_unit) as h_avg from  `${city_location_url}`  group by h_district
+    </select>
+    <select id="getHouseRenovationByStrict" resultType="com.czu.zsj.pojo.HouseRenovation">
+        select h_renovation,count(*) AS h_renovation_total from `${city_location_url}` WHERE h_district=#{h_district} GROUP BY h_renovation
+    </select>
+    <select id="getHouseAreaPrice" resultType="com.czu.zsj.pojo.HouseAreaPrice">
+        select h_area,h_price_total from `${city_location_url}` WHERE h_district=#{h_district}
+    </select>
+    <select id="getHouseTypePrice" resultType="com.czu.zsj.pojo.HouseTypePrice">
+        SELECT h_type,AVG(h_price_total) price_avg,COUNT(*) sum FROM `${city_location_url}`  where h_district=#{h_district} group by h_type;
+    </select>
+    <select id="getHouseDistrictPrice" resultType="com.czu.zsj.pojo.HouseDistrictPrice">
+        SELECT h_district,h_price_total from `${city_location_url}`
+    </select>
+    <select id="getHouseDistrictPriceUnit" resultType="com.czu.zsj.pojo.HouseDistrictPriceUnit">
+        SELECT h_district,AVG(h_price_unit) district_unit_price from `${city_location_url}` GROUP BY h_district
+    </select>
+    <select id="getHouseHeigthPrice" resultType="com.czu.zsj.pojo.HouseHeigthPrice">
+        SELECT h_heigth,AVG(h_price_unit) as h_price_unit,count(*) as total from `${city_location_url}` WHERE h_district=#{h_district} GROUP BY h_heigth
+    </select>
+    <select id="getHouseFace" resultType="com.czu.zsj.pojo.HouseFace">
+        SELECT   h_face,count(*) total from `${city_location_url}` WHERE h_district=#{h_district} GROUP BY h_face HAVING total>20;
+    </select>
+    <select id="getAllHouseByPage" resultType="com.czu.zsj.pojo.House">
+        SELECT * FROM `${city_location_url}`
+    </select>
+
+
+    <!-- 分页查询 -->
+    <select id="getHouseByOption" resultType="com.czu.zsj.pojo.House">
+        select *
+        from `${city_location_url}`
+        <where>
+            <if test="h_district!=null and h_district!='' ">
+                h_district=#{h_district}
+            </if>
+        </where>
+    </select>
+
+    <!--收藏夹-->
+    <select id="getmyshoucang" resultType="com.czu.zsj.pojo.House">
+        SELECT h.* FROM `${city_location_url}` h,users u,shoucang s WHERE s.`s_user`=u.`u_id` AND u.`u_id`=#{s_user} AND s.`s_house`=h.`h_id` AND s.`s_city`=#{city_location_url}
+    </select>
+
+
+    <!--添加信息-->
+    <insert id="insertHouse" parameterType="com.czu.zsj.util.InsertHouseVO">
+        insert into `${city_location_url}`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="h_district != null">
+                h_district,
+            </if>
+            <if test="h_title != null">
+                h_title,
+            </if>
+            <if test="h_address != null">
+                h_address,
+            </if>
+            <if test="h_type != null">
+                h_type,
+            </if>
+            <if test="h_area != null">
+                h_area,
+            </if>
+            <if test="h_face != null">
+                h_face,
+            </if>
+            <if test="h_renovation != null">
+                h_renovation,
+            </if>
+            <if test="h_heigth != null">
+                h_heigth,
+            </if>
+            <if test="h_structure != null">
+                h_structure,
+            </if>
+            <if test="h_price_unit != null">
+                h_price_unit,
+            </if>
+            <if test="h_price_total != null">
+                h_price_total,
+            </if>
+            h_judge,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="h_district != null">
+                #{h_district,jdbcType=VARCHAR},
+            </if>
+            <if test="h_title != null">
+                #{h_title,jdbcType=VARCHAR},
+            </if>
+            <if test="h_address != null">
+                #{h_address,jdbcType=VARCHAR},
+            </if>
+            <if test="h_type != null">
+                #{h_type,jdbcType=VARCHAR},
+            </if>
+            <if test="h_area != null">
+                #{h_area,jdbcType=DOUBLE},
+            </if>
+            <if test="h_face != null">
+                #{h_face,jdbcType=VARCHAR},
+            </if>
+            <if test="h_renovation != null">
+                #{h_renovation,jdbcType=VARCHAR},
+            </if>
+            <if test="h_heigth != null">
+                #{h_heigth,jdbcType=VARCHAR},
+            </if>
+            <if test="h_structure != null">
+                #{h_structure,jdbcType=VARCHAR},
+            </if>
+            <if test="h_price_unit != null">
+                #{h_price_unit,jdbcType=INTEGER},
+            </if>
+            <if test="h_price_total != null">
+                #{h_price_total,jdbcType=FLOAT},
+            </if>
+            1
+        </trim>
+    </insert>
+
+
+    <!--删除-->
+    <delete id="deleteInfo" parameterType="com.czu.zsj.util.DeleteHouseVo">
+    delete from `${city_location_url}` where h_id=#{h_id}
+    </delete>
+
+    <select id="getHouseByJudge" resultType="com.czu.zsj.pojo.House">
+        select * from `${city_location_url}` where h_judge='1'
+    </select>
+
+    <update id="judgeInfo" parameterType="com.czu.zsj.util.DeleteHouseVo">
+        update `${city_location_url}` set h_judge='0' where h_id=#{h_id}
+    </update>
+
+    <select id="getMaxPrice" resultType="com.czu.zsj.pojo.MaxMinPrice">
+        select max(h_price_unit) price from `${city_location_url}` where  h_district=#{h_district}
+    </select>
+
+    <select id="getMinPrice" resultType="com.czu.zsj.pojo.MaxMinPrice">
+        select min(h_price_unit) price from `${city_location_url}` where  h_district=#{h_district}
+    </select>
+
+
+
+
+</mapper>

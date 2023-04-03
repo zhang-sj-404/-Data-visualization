@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.czu.zsj.mapper.UserMapper">
+    <select id="findUserByPhone" resultType="com.czu.zsj.pojo.User">
+        SELECT * from users WHERE u_phone=#{u_phone} AND u_password=#{u_pass}
+    </select>
+    <insert id="insertUser" parameterType="com.czu.zsj.pojo.User">
+        insert into users
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="u_name != null">
+                u_name,
+            </if>
+            <if test="u_password != null">
+                u_password,
+            </if>
+            <if test="u_phone != null">
+                u_phone,
+            </if>
+            <if test="u_email != null">
+                u_email,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="u_name != null">
+                #{u_name,jdbcType=VARCHAR},
+            </if>
+            <if test="u_password != null">
+                #{u_password,jdbcType=VARCHAR},
+            </if>
+            <if test="u_phone != null">
+                #{u_phone,jdbcType=VARCHAR},
+            </if>
+            <if test="u_email != null">
+                #{u_email,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findUserByid" resultType="com.czu.zsj.pojo.User">
+        SELECT * from users WHERE u_id=#{u_id}
+    </select>
+
+    <update id="updateMyInfo" parameterType="com.czu.zsj.pojo.User">
+        update users
+        <set>
+            <if test="u_name !=null and u_name!=''">
+                u_name = #{u_name},
+            </if>
+            <if test="u_password !=null and u_password !=''">
+                u_password = #{u_password},
+            </if>
+            <if test="u_email !=null and u_email !=''">
+                u_email = #{u_email},
+            </if>
+            <if test="u_phone !=null and u_phone !=''">
+                u_phone = #{u_phone},
+            </if>
+        </set>
+        <where>
+            u_id = #{u_id}
+        </where>
+    </update>
+
+    <select id="getAllUser" resultType="com.czu.zsj.pojo.User">
+        select * from users;
+    </select>
+</mapper>

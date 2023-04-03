@@ -1,0 +1,7 @@
+{
+  "name": "view",
+  "version": "1.0.0",
+  "dependencies": {
+    "echarts-stat": "^1.2.0"
+  }
+}
